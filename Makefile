@@ -5,13 +5,13 @@ TARGET := seoul-report
 
 all: $(TARGET).pdf
 
-$(TARGET).pdf: $(TARGET).tex
+$(TARGET).pdf: $(TARGET).tex $(TARGET).bib
 	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error $(TARGET).tex
 
 clean:
 	$(LATEXMK) -c $(TARGET).tex
-	$(RM) $(TARGET).bib $(TARGET).bbl
+	$(RM) $(TARGET).bbl
 
 distclean:
 	$(LATEXMK) -C $(TARGET).tex
-	$(RM) $(TARGET).bib $(TARGET).bbl
+	$(RM) $(TARGET).bbl

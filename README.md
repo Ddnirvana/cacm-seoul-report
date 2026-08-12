@@ -1,7 +1,8 @@
 # The Seoul Report on Systems Research
 
-The article source is in `seoul-report.tex` and uses the ACM `acmart` LaTeX
-class. A TeX distribution with `latexmk`, `pdflatex`, and BibTeX is required.
+The article source is in `seoul-report.tex`, with bibliography entries in
+`seoul-report.bib`, and uses the ACM `acmart` LaTeX class. A TeX distribution
+with `latexmk`, `pdflatex`, and BibTeX is required.
 
 Build the article from this directory:
 
