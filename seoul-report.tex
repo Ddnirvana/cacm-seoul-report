@@ -76,7 +76,7 @@ It does not survey the full breadth of systems research, nor does it claim that 
 Where the discussion revealed different instincts,
 we state the underlying tension as a research question for our community rather than resolve it by assertion.
 
-\section{Key Insights}
+\section{Key Take-aways}
 
 \begin{itemize}
 \item \textbf{AI makes systems reasoning more important, not less.}
@@ -145,7 +145,7 @@ rebuilding stable interfaces and operating-system foundations, and making system
 
 \subsection{Systems and AI Must Be Co-Designed}
 
-Our community should treat AI in three roles: as a workload whose infrastructure we must build,
+The workshop discussion highlighted three roles for AI: as a workload whose infrastructure we build,
 as a component inside systems, and as an instrument for systems research.
 The roles share mechanisms but not success criteria.
 A serving system must account for output quality as well as latency and throughput.
@@ -207,9 +207,9 @@ Abstraction allows us to use a component without understanding its implementatio
 but not without depending on it.
 Trust passes transitively through libraries, compilers, operating systems,
 hardware, manufacturing, models, training code, and the tools that produced them.
-The right question is therefore not whether a component is trusted in the abstract,
-but what risk it creates in a particular system:
-how likely it is to fail or be compromised, and how much control that failure grants.
+Explicit trust models remain essential: they identify which components a system assumes to be trustworthy and which it does not.
+Risk analysis complements this model by asking what risk each trust assumption creates in a particular system:
+how likely that assumption is to fail, and how much control its failure grants.
 Least privilege, isolation, focused verification, diversity, and redundancy reduce risk by limiting control or avoiding a single point of trust.
 
 \textbf{Treat availability as behavior, not a protocol property.}
@@ -321,9 +321,8 @@ while active faculty and contributing institutions also grew sharply.
 Yet program committee representation remained about 11.3\%, below a publication share approaching 30\%.
 The precise measures deserve continued scrutiny, but the direction is clear:
 governance and service should broaden with research output.
-We should define the community around people who build and study computing infrastructure, not around loyalty to a particular venue or region.
 
-\textbf{Keep judgment and sustainability in the curriculum.} Students should learn to use AI tools without surrendering the responsibility to explain and verify their output.
+\textbf{Keep judgment and sustainability in the curriculum.} How can we teach students to use AI tools without surrendering responsibility for explaining and verifying their output?
 Education can emphasize problem statements, invariants, evaluation, and operational reasoning alongside implementation.
 The fast replacement cycle of AI hardware creates another systems opportunity:
 aging accelerators may still serve other workloads, extending their useful life and reducing embodied-carbon cost.
@@ -334,7 +333,7 @@ Their interfaces and defaults distribute power, determine what can be observed, 
 System builders should consider observability, provenance, explanation, access,
 redress, redundancy, and independent sources of truth as technical mechanisms.
 Safeguards should reflect both the likelihood and severity of harm, especially when recovery is impossible.
-Policy is not solely our task, but our knowledge of the system gives us a responsibility to make its risks and control points visible.
+%Systems expertise can inform broader policy discussions by clarifying where risks arise and where technical controls can be applied.
 
 \section{Conclusion}
 
@@ -346,8 +345,8 @@ These forces reward work close to implementation, but they also increase the val
 
 Our community already has the habits needed for this transition: expose a useful abstraction,
 characterize a tradeoff, build the mechanism, measure the whole system, and revise the design when reality disagrees.
-The agenda for the next five to ten years is to apply those habits across models, hardware, software, operations, and human institutions.
-If we do so, systems research can make rapid technological change not only faster,
+Over the next five to ten years, we may see those habits increasingly applied across models, hardware, software, operations, and human institutions.
+As these habits spread, systems research may help make rapid technological change not only faster,
 but more understandable, dependable, and open to improvement.
 We thank the speakers, panelists, session chairs, organizers, and attendees of SSW '25 for the talks and discussions on which this report is based.
 The workshop program and recordings are available at \url{https://ipads.se.sjtu.edu.cn/sigops-strategic/}.
@@ -364,8 +363,8 @@ The workshop program and recordings are available at \url{https://ipads.se.sjtu.
 \par
 \noindent\rule{\linewidth}{0.4pt}
 \par
-\noindent The following authors served as editors of this article (Haibo Chen
-also served as corresponding author):
+\noindent The following authors served as editors of this article:
+% (Haibo Chen also served as corresponding author):
 
 \par
 \noindent\textbf{Haibo Chen} (\href{mailto:haibochen@sjtu.edu.cn}{haibochen@sjtu.edu.cn})
