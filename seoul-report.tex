@@ -58,7 +58,8 @@ forced abstractions to evolve, and supplied the problems that keep our field rel
 
 These achievements demonstrate that our community is strong.
 Yet the assumptions beneath many of them are shifting together.
-General-purpose performance scaling has slowed. Domain-specific accelerators and new memory technologies are fragmenting the hardware substrate.
+General-purpose performance scaling has slowed.
+Domain-specific accelerators and new memory technologies are fragmenting the hardware substrate.
 AI is becoming both a major systems workload and a tool for producing systems.
 Meanwhile, long software supply chains, wide cloud interfaces,
 and tightly coupled services make it harder to know what a system will do, why it failed, or whom to trust.
@@ -73,8 +74,8 @@ we looked backward for durable lessons and forward toward problems that may defi
 This report summarizes the themes that recurred across the workshop and the agenda that emerged from subsequent synthesis.
 It is intentionally selective.
 It does not survey the full breadth of systems research, nor does it claim that every participant preferred the same solution.
-Where the discussion revealed different instincts,
-we state the underlying tension as a research question for our community rather than resolve it by assertion.
+%Where the discussion revealed different instincts,
+%we state the underlying tension as a research question for our community rather than resolve it by assertion.
 
 \section{Key Take-aways}
 
@@ -92,7 +93,7 @@ Specialization requires coordination across models, software, hardware, memory, 
 while narrow and declarative interfaces remain essential for portability, evolution, and verification.
 
 \item \textbf{Our community's knowledge and practices are research infrastructure.}
-We need to preserve engineering judgment in an AI-assisted world, turn tacit craft into transferable principles,
+We may need to preserve engineering judgment in an AI-assisted world, turn tacit craft into transferable principles,
 and make participation, responsibility, and face-to-face exchange part of how the field measures progress.
 \end{itemize}
 
@@ -105,7 +106,7 @@ toward parallelism and domain-specific architectures.
 AI has accelerated that movement, but arithmetic throughput alone is no longer a useful account of the machine.
 Memory bandwidth and capacity, data movement, energy, packaging,
 and the placement of data across heterogeneous memories increasingly determine performance and cost.
-The operating system and runtime must therefore decide not only when work runs, but where its computation and state belong.
+The OS and runtime must therefore decide not only when work runs, but where its computation and state belong.
 
 The second change is the dual role of AI.
 AI workloads bring probabilistic quality, enormous synchronous jobs, rapidly changing models,
@@ -133,43 +134,48 @@ Efficiency pushes us down the stack, toward model internals, memory hierarchies,
 specialized devices, and deployment details.
 Longevity pushes us toward simple mechanisms, declarative descriptions,
 and stable interfaces that allow pieces to evolve independently.
-The central question is not which direction to choose,
-but which distinctions must cross an interface and which can safely remain hidden.
+%The central question is not which direction to choose,
+%but which distinctions must cross an interface and which can safely remain hidden.
 
 \section{Research Challenges}
 
-The changed landscape presents many opportunities. We organize the workshop's discussion
+The changed landscape presents many opportunities.
+We organize the workshop's discussion
 into four areas in which systems expertise is especially relevant:
-co-designing systems and AI, achieving reliability across the full system,
-rebuilding stable interfaces and operating-system foundations, and making systems knowledge transferable.
+(1) co-designing systems and AI, (2) achieving reliability across the full system,
+(2) rebuilding stable interfaces and OS foundations, and (4) making systems knowledge transferable.
 
-\subsection{Systems and AI Must Be Co-Designed}
+\subsection{Systems and AI Shall Be Co-Designed}
 
 The workshop discussion highlighted three roles for AI: as a workload whose infrastructure we build,
 as a component inside systems, and as an instrument for systems research.
 The roles share mechanisms but not success criteria.
 A serving system must account for output quality as well as latency and throughput.
-A learned component inside an operating system still needs testing, monitoring,
+A learned component inside an OS still needs testing, monitoring,
 and repair even though its logic is encoded in model state rather than source statements.
 An agent that rewrites code must be judged against the intended system behavior,
 not merely against a convenient benchmark.
 Conflating the roles risks building a fast tool that solves the wrong problem.
 
-\textbf{Make evaluators first-class artifacts.} As AI tools move from parameter tuning to white-box construction,
-evaluation becomes part of the design. Useful evaluators must represent correctness,
+\textbf{Make evaluators first-class artifacts.}
+As AI tools move from parameter tuning to white-box construction,
+evaluation becomes part of the design.
+Useful evaluators must represent correctness,
 performance, resource cost, robustness, and operational constraints without collapsing them into a misleading score.
-They must detect solutions that improve the measured result by changing semantics,
-such as dropping work. This calls for diverse and held-out workloads, faithful simulators,
+They may detect solutions that improve the measured result.
+% by changing semantics,
+%such as dropping work.
+This calls for diverse and held-out workloads, better simulators,
 and specifications that expose why a proposed change works and where it fails.
-Traditional testing, monitoring, repair, and formal reasoning remain valuable, but they must be adapted to learned behavior and opaque model state.
+Traditional testing, monitoring, repair, and formal reasoning are still valuable, but they can be further adapted to learned behavior and opaque model state.
 
 \textbf{Build accuracy-aware infrastructure.} AI services replace a binary notion of correctness with choices
 that couple system performance and output quality.
 Quantization, caching, speculative execution, and continuous batching can improve efficiency,
 but numerical choices and even batch composition can change results.
-A production system therefore needs explicit quality objectives and mechanisms that navigate them
+A production system therefore may need explicit quality objectives and mechanisms that navigate them
 together with latency, throughput, availability, and cost.
-The same stack must tolerate slow or failed accelerators and loss of a cloud provider.
+The same stack may tolerate slow or failed accelerators and loss of a cloud provider.
 Agentic workloads add persistent state, tools, orchestration,
 and computer use before the field has agreed on the basic abstractions that tie them together.
 
