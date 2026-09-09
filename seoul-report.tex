@@ -56,8 +56,8 @@ The influence also runs in the other direction:
 deployment experience has exposed new failure modes,
 forced abstractions to evolve, and supplied the problems that keep our field relevant.
 
-These achievements demonstrate that our community is strong.
-Yet the assumptions beneath many of them are shifting together.
+These achievements reflect the reach of systems research.
+Yet many of the assumptions behind them are shifting together.
 General-purpose performance scaling has slowed.
 Domain-specific accelerators and new memory technologies are fragmenting the hardware substrate.
 AI is becoming both a major systems workload and a tool for producing systems.
@@ -68,10 +68,10 @@ In October 2025, the authors of this report met in Seoul, South Korea,
 for the first ACM SIGOPS Strategic Workshop, held with SOSP 2025.
 The meeting brought together researchers and practitioners from operating systems,
 distributed systems, cloud infrastructure, architecture, reliability, and AI.
-Following the spirit of the 2015 SOSP History Day and the database community's periodic research reports,
-we looked backward for durable lessons and forward toward problems that may define the next five to ten years.
+It followed the spirit of the 2015 SOSP History Day and the database community's periodic research reports.
+We looked backward for durable lessons and forward toward problems that may shape the next five to ten years.
 
-This report summarizes the themes that recurred across the workshop and the agenda that emerged from subsequent synthesis.
+This report summarizes recurring workshop themes and possible research directions drawn from those discussions.
 It is intentionally selective.
 It does not survey the full breadth of systems research, nor does it claim that every participant preferred the same solution.
 %Where the discussion revealed different instincts,
@@ -81,20 +81,20 @@ It does not survey the full breadth of systems research, nor does it claim that 
 
 \begin{itemize}
 \item \textbf{AI makes systems reasoning more important, not less.}
-Models and agents can generate code, tune policies, and explore designs,
-but the value of their output depends on specifications, evaluators, and verification that capture the real objective.
+Models and agents generate code, tune policies, and explore designs.
+The value of their output depends on how well specifications, evaluators, and verification capture the intended objective.
 
 \item \textbf{Reliability is a property of the whole system.}
-Trustworthy components and reliable protocols do not automatically compose into an available service;
-deployment, performance, feedback loops, diagnosis, and persistent hardware faults belong in the reliability model.
+Trustworthy components and reliable protocols do not automatically compose into an available service.
+This raises questions about deployment, performance, feedback loops, diagnosis, and persistent hardware faults.
 
-\item \textbf{The next stack needs both co-design and stable interfaces.}
-Specialization requires coordination across models, software, hardware, memory, and operations,
-while narrow and declarative interfaces remain essential for portability, evolution, and verification.
+\item \textbf{Co-design and stable interfaces offer complementary benefits.}
+Specialization creates opportunities for coordination across models, software, hardware, memory, and operations.
+Narrow and declarative interfaces support portability, evolution, and verification.
 
 \item \textbf{Our community's knowledge and practices are research infrastructure.}
-We may need to preserve engineering judgment in an AI-assisted world, turn tacit craft into transferable principles,
-and make participation, responsibility, and face-to-face exchange part of how the field measures progress.
+The discussions raised questions about preserving engineering judgment and turning tacit craft into transferable principles in an AI-assisted world.
+Participation, responsibility, and face-to-face exchange also emerged as themes in considering the field's progress.
 \end{itemize}
 
 \section{What Has Changed for Systems Research?}
@@ -103,31 +103,28 @@ Three changes cut across nearly every workshop session.
 The first is a new hardware balance.
 The end of Dennard scaling moved performance growth away from faster general-purpose cores and
 toward parallelism and domain-specific architectures.
-AI has accelerated that movement, but arithmetic throughput alone is no longer a useful account of the machine.
+AI has accelerated that movement, but arithmetic throughput alone gives an incomplete picture of the machine.
 Memory bandwidth and capacity, data movement, energy, packaging,
 and the placement of data across heterogeneous memories increasingly determine performance and cost.
-The OS and runtime must therefore decide not only when work runs, but where its computation and state belong.
+For the OS and runtime, scheduling increasingly involves where computation and state reside, as well as when work runs.
 
 The second change is the dual role of AI.
 AI workloads bring probabilistic quality, enormous synchronous jobs, rapidly changing models,
 and a growing collection of serving and agent components.
-At the same time, AI tools can now inspect and rewrite system implementations rather than merely tune a black box.
-This creates an appealing loop in which an agent proposes a design,
-evaluates it, and iterates.
-It also moves the hard part:
-if the task is underspecified or the evaluator rewards the wrong behavior,
-the loop can efficiently optimize the wrong system.
-Problem formulation, measurement, and verification become central systems contributions.
+At the same time, AI tools now inspect and rewrite system implementations, going beyond tuning a black box.
+An agent proposes a design, evaluates it, and iterates.
+This loop brings problem formulation, measurement, and verification into focus.
+An underspecified task or an evaluator that rewards the wrong behavior risks directing optimization toward the wrong objective.
 
 The third change is the scale of composition.
 Modern services combine hardware, firmware, compilers, kernels, libraries, distributed protocols,
 deployment systems, provider APIs, and learned components.
-Each layer can be reasonable in isolation while the whole remains fragile.
-A local loss of capacity can become a performance outage;
-a temporary overload can trigger a degraded state that persists;
-a rollout or mistaken diagnosis can do more damage than the initiating fault.
-Operations and maintenance can no longer be treated as the phase after design.
-They are where the behavior of the design is finally revealed.
+Each layer may be reasonable in isolation while the whole remains fragile.
+A local loss of capacity may become a performance outage.
+A temporary overload may trigger a degraded state that persists after the overload ends.
+A rollout or mistaken diagnosis may do more damage than the initiating fault.
+These failures highlight the close relationship between design, operations, and maintenance.
+Experience in operation reveals behavior that is difficult to anticipate during design.
 
 These changes pull systems research in two directions.
 Efficiency pushes us down the stack, toward model internals, memory hierarchies,
@@ -143,217 +140,220 @@ The changed landscape presents many opportunities.
 We organize the workshop's discussion
 into four areas in which systems expertise is especially relevant:
 (1) co-designing systems and AI, (2) achieving reliability across the full system,
-(2) rebuilding stable interfaces and OS foundations, and (4) making systems knowledge transferable.
+(3) rebuilding stable interfaces and OS foundations, and (4) making systems knowledge transferable.
 
-\subsection{Systems and AI Shall Be Co-Designed}
+\subsection{Co-Designing Systems and AI}
 
-The workshop discussion highlighted three roles for AI: as a workload whose infrastructure we build,
-as a component inside systems, and as an instrument for systems research.
+The workshop discussion highlighted three roles for AI.
+It is a workload supported by systems infrastructure, a component inside systems, and an instrument for systems research.
 The roles share mechanisms but not success criteria.
-A serving system must account for output quality as well as latency and throughput.
-A learned component inside an OS still needs testing, monitoring,
-and repair even though its logic is encoded in model state rather than source statements.
-An agent that rewrites code must be judged against the intended system behavior,
-not merely against a convenient benchmark.
+A serving system couples output quality with latency and throughput.
+A learned component inside an OS raises familiar questions about testing, monitoring, and repair.
+Its logic, however, is encoded in model state rather than source statements.
+For an agent that rewrites code, success depends on preserving the intended system behavior;
+a convenient benchmark may capture only part of that behavior.
 Conflating the roles risks building a fast tool that solves the wrong problem.
 
-\textbf{Make evaluators first-class artifacts.}
+\textbf{Evaluators as research artifacts.}
 As AI tools move from parameter tuning to white-box construction,
 evaluation becomes part of the design.
-Useful evaluators must represent correctness,
-performance, resource cost, robustness, and operational constraints without collapsing them into a misleading score.
-They may detect solutions that improve the measured result.
+Evaluators face a challenge: how to assess correctness, performance, resource cost, robustness, and operational constraints together.
+A single score risks obscuring differences among these goals.
+An apparent improvement in the measured result also raises the question of whether the intended behavior has been preserved.
 % by changing semantics,
 %such as dropping work.
-This calls for diverse and held-out workloads, better simulators,
-and specifications that expose why a proposed change works and where it fails.
-Traditional testing, monitoring, repair, and formal reasoning are still valuable, but they can be further adapted to learned behavior and opaque model state.
+Possible approaches include diverse and held-out workloads, better simulators,
+and specifications that help explain why a proposed change works and where it fails.
+Traditional testing, monitoring, repair, and formal reasoning provide a starting point.
+How to adapt them to learned behavior and opaque model state remains an open question.
 
-\textbf{Build accuracy-aware infrastructure.} AI services replace a binary notion of correctness with choices
-that couple system performance and output quality.
-Quantization, caching, speculative execution, and continuous batching can improve efficiency,
-but numerical choices and even batch composition can change results.
-A production system therefore may need explicit quality objectives and mechanisms that navigate them
-together with latency, throughput, availability, and cost.
-The same stack may tolerate slow or failed accelerators and loss of a cloud provider.
-Agentic workloads add persistent state, tools, orchestration,
-and computer use before the field has agreed on the basic abstractions that tie them together.
+\textbf{Accuracy-aware infrastructure.} AI services introduce tradeoffs between system performance and output quality, beyond a binary notion of correctness.
+Quantization, caching, speculative execution, and continuous batching offer ways to improve efficiency.
+Yet numerical choices and even batch composition may change results.
+Explicit quality objectives could help production systems balance these choices with latency, throughput, availability, and cost.
+Slow or failed accelerators and loss of a cloud provider add reliability challenges to the same stack.
+Agentic workloads add persistent state, tools, orchestration, and computer use.
+The basic abstractions that tie these elements together are still evolving.
 
-\textbf{Develop model-facing OS abstractions.} Treating a model as an ordinary process preserves compatibility
-but hides opportunities for resource management and protection.
-Replacing the operating system with a model discards mechanisms that remain necessary.
-A more promising path is evolutionary:
-expose declarative interfaces suited to an agent's goals,
-manage KV-cache and other model state explicitly, and schedule across CPUs, GPUs, NPUs, memories, and remote services.
-Such integration widens the security boundary.
-An agent acting with a user's authority needs constrained delegation, privacy protection,
-and auditable control over both machine actions and access to models and data.
+\textbf{Model-facing OS abstractions.} Treating a model as an ordinary process preserves compatibility
+but may hide opportunities for resource management and protection.
+Replacing the operating system with a model risks losing useful mechanisms.
+An evolutionary approach offers another direction.
+Possibilities include declarative interfaces suited to an agent's goals and explicit management of KV-cache and other model state.
+Scheduling across CPUs, GPUs, NPUs, memories, and remote services is another area for exploration.
+Such integration also widens the security boundary.
+An agent acting with a user's authority raises questions about constrained delegation, privacy, and auditability.
+These questions concern both machine actions and access to models and data.
 
-\textbf{Optimize the workflow, not one device.} The gap between AI demand and conventional hardware improvement makes co-design unavoidable.
-Model and algorithm designers need efficiency constraints early enough to shape their choices;
-system software must make new accelerators usable;
-and automated exploration should compare designs across the stack.
-The relevant cost is often outside the GPU: CPU work, DRAM capacity, storage, data movement,
-and tools invoked by agents can dominate parts of a workflow.
-Research that reaches production quickly demonstrates the opportunity,
-but it also warns against optimizing a single kernel while moving cost elsewhere.
+\textbf{Efficiency across the workflow.} The gap between AI demand and conventional hardware improvement strengthens the case for co-design.
+Considering efficiency constraints early could help guide model and algorithm design.
+System software connects new accelerators to applications, while automated exploration offers ways to compare designs across the stack.
+The relevant cost often extends beyond the GPU.
+CPU work, DRAM capacity, storage, data movement, and tools invoked by agents may dominate parts of a workflow.
+Research that reaches production quickly illustrates the opportunity for impact.
+It also highlights a risk: optimizing a single kernel may shift cost elsewhere in the workflow.
 
-This does not require every academic group to own a giant cluster.
-Simulation, emulation, focused testbeds, and careful study of inference or fine-tuning
-can expose architectural and systems problems at useful scale.
-Indeed, academia has a special role in escaping the hardware lottery:
-today's stack is deeply optimized around dominant models and operations,
-which makes alternatives appear impractical before their software exists.
-Intermediate representations, compilers, runtimes, and evaluation tools
-can let a new hardware idea run meaningful workloads without first reproducing an entire ecosystem.
+Large clusters are only one setting for exploring these questions.
+Simulation, emulation, focused testbeds, and studies of inference or fine-tuning offer other ways to examine architectural and systems problems.
+Academia also has opportunities to explore alternatives to the dominant hardware and software ecosystem.
+Today's stack is deeply optimized around dominant models and operations.
+This hardware lottery may make alternatives appear impractical before their software exists.
+Intermediate representations, compilers, runtimes, and evaluation tools could help new hardware ideas run meaningful workloads without reproducing an entire ecosystem.
 
-\subsection{Reliability Must Span the Full System}
+\subsection{Reliability Across the Full System}
 
 Abstraction allows us to use a component without understanding its implementation,
 but not without depending on it.
 Trust passes transitively through libraries, compilers, operating systems,
 hardware, manufacturing, models, training code, and the tools that produced them.
-Explicit trust models remain essential: they identify which components a system assumes to be trustworthy and which it does not.
-Risk analysis complements this model by asking what risk each trust assumption creates in a particular system:
-how likely that assumption is to fail, and how much control its failure grants.
-Least privilege, isolation, focused verification, diversity, and redundancy reduce risk by limiting control or avoiding a single point of trust.
+An explicit trust model identifies which components a system assumes to be trustworthy and which it does not.
+Risk analysis complements that model by examining the consequences of each trust assumption.
+How likely is the assumption to fail, and how much control would that failure grant?
+Least privilege, isolation, focused verification, diversity, and redundancy offer ways to limit control or avoid a single point of trust.
 
-\textbf{Treat availability as behavior, not a protocol property.}
+\textbf{Availability beyond protocols.}
 Our field has reliable protocols, yet services built from them still fail.
 Availability includes completing useful work at acceptable performance, not merely returning a correct answer eventually.
 A fault-tolerant component that loses capacity can trigger queues and timeouts in its callers.
 A single slow participant can stall a synchronous AI job.
-Configuration changes and staged rollouts alter the system while it is running,
-and a plausible but wrong diagnosis can prolong the outage.
-We need models, experiments, and tools for deployment, observability, diagnosis, and repair as seriously as we need another protocol refinement.
+Configuration changes and staged rollouts alter the system while it is running.
+A plausible but wrong diagnosis may prolong an outage.
+Alongside protocol refinement, deployment, observability, diagnosis, and repair offer research opportunities for improving availability.
+Models, experiments, and tools for these activities could help connect protocol guarantees to service behavior.
 
-\textbf{Understand failures created by composition.}
+\textbf{Failures created by composition.}
 Metastable failures show why component-wise reasoning is insufficient.
 A temporary trigger can push a service into a degraded state that persists after the trigger disappears.
-Retry amplification is one example, but a broader mechanism arises when individually stable components change
-one another's operating environments and become mutually destabilizing.
-We need compositional models that say when local control loops preserve global stability,
-how to detect that the system has crossed into a metastable state, and how to recover without repeating the same feedback.
+Retry amplification is one example.
+More generally, individually stable components may change one another's operating environments and become mutually destabilizing.
+Compositional models could help explain when local control loops preserve global stability.
+Related questions concern detecting entry into a metastable state and recovering without repeating the same feedback.
 
-\textbf{Create practical beachheads of correctness.}
-Whole-system verification remains difficult, but waiting for an all-or-nothing proof leaves production code untouched.
-Gradual verification starts with the state, invariants, functions, and code paths that matter most,
+\textbf{Practical beachheads of correctness.}
+Whole-system verification remains difficult.
+Gradual verification offers a way to work with production code without first proving the entire system.
+It starts with the state, invariants, functions, and code paths that matter most,
 then finds a focused bug or proves a focused property.
-The verified region can grow as the system changes. This approach is especially valuable when combined with risk analysis:
-proof effort can be directed toward components whose failure grants the greatest control or produces the least recoverable harm.
+The verified region can grow as the system changes.
+Risk analysis could help prioritize proof effort toward components whose failure grants the greatest control or causes harm that is difficult to reverse.
 
-\textbf{Design above unreliable hardware.} Persistent and silent hardware faults weaken the assumption that restart returns execution to a sound base.
+\textbf{Reliability above faulty hardware.} Persistent and silent hardware faults weaken the assumption that restart returns execution to a sound base.
 A mercurial core may reproduce an error after checkpoint recovery, while silent corruption can escape conventional failure detectors.
-Software-defined checking and redundancy can use otherwise idle resources to detect or mask these faults.
-The research challenge is to obtain meaningful coverage at controlled overhead and to connect hardware evidence to the end-to-end correctness claims made by the service.
+Software-defined checking and redundancy offer ways to use otherwise idle resources to detect or mask these faults.
+Two questions follow: how much coverage is possible at acceptable overhead, and how does hardware evidence support a service's end-to-end correctness claims?
 
-\subsection{The Stack Needs Stable Interfaces and Better Foundations}
+\subsection{Stable Interfaces and OS Foundations}
 
-Specialization often rewards vertical integration: an application, runtime, cloud service,
-and accelerator can be tuned together for immediate gains. Over time, however, a tightly coupled stack can obstruct portability, independent innovation, and verification.
-Modern cloud platforms illustrate the danger.
+Specialization often rewards vertical integration.
+Tuning an application, runtime, cloud service, and accelerator together offers immediate gains.
+Over time, however, tight coupling may obstruct portability, independent innovation, and verification.
+Modern cloud platforms illustrate this tension.
 Instead of a narrow waist with many implementations below and applications above,
 they expose a wide and changing collection of provider-specific APIs.
-AI-generated software magnifies the problem because every additional interface expands what the generator must understand and what the evaluator must test.
+AI-generated software adds another dimension to the problem.
+Each additional interface expands the behavior that the generator and evaluator have to account for.
 
-\textbf{Find narrow waists through experience.} Stable interfaces such as those in earlier operating-system, network,
-and data-management stacks supported independent evolution because they exposed a small common mechanism.
-The cloud needs similar waists, but we should not assume that a committee can design the right one before enough systems exist.
+\textbf{Narrow waists through experience.} Earlier OS, network, and data management stacks illustrate the value of stable interfaces.
+By exposing a small common mechanism, these interfaces supported independent evolution.
+Similar waists are an appealing possibility for the cloud, although it may be difficult to define them before gaining experience with enough systems.
 Narrow waists often emerge after experimentation reveals what is truly common.
-Research can accelerate that process by comparing real services, identifying repeated mechanisms,
-and testing whether a candidate interface provides portability without suppressing important optimizations.
+Research could contribute by comparing real services and identifying repeated mechanisms.
+Candidate interfaces could then be tested for portability and their effects on important optimizations.
 
-\textbf{Prefer declarative interaction where possible.}
+\textbf{Declarative interaction.}
 An imperative sequence forces the caller to coordinate intermediate state and often encodes accidental details of one implementation.
 A declarative request states the desired outcome and leaves room for the system to optimize, recover,
 and choose among heterogeneous resources.
 This idea connects model-facing interfaces, cloud portability, configuration, and operations.
-It also creates an obligation: the declaration must be precise enough to verify, and the system must expose enough explanation to show how the outcome was achieved.
+It also raises questions about verification and explanation.
+How precisely does the declaration describe the desired outcome, and what evidence explains how the system achieved it?
 
-\textbf{Revisit principled OS design.} Operating systems are not a solved foundation.
-A small verified kernel can provide strong low-level guarantees and still be too close to an assembly language for most system builders.
-We need usable structure above that base without recreating an unverifiable monolith. Radical simplicity, fine-grained modules,
-separation of concerns, sequential event-driven logic within modules,
-and replaceable use-case-specific policies offer one path.
-The goal is not simplicity as an aesthetic; it is a system whose mechanisms can be understood, verified, maintained, and adapted without giving up performance.
+\textbf{Revisiting OS design.} OS foundations still present open design questions.
+A small verified kernel may provide strong low-level guarantees while exposing interfaces too primitive for most system builders.
+How might a more usable structure be built above that base without recreating an unverifiable monolith?
+Radical simplicity, fine-grained modules, and separation of concerns offer one direction.
+Sequential event-driven logic within modules and replaceable use-case-specific policies are related possibilities.
+The appeal is practical: mechanisms that are easier to understand, verify, maintain, and adapt while retaining performance.
 
-The tension between co-design and stable interfaces should remain visible.
-A waist that hides every distinction prevents efficient placement across accelerators and memories.
-An interface that exposes every device detail simply moves the wide waist upward.
-Our task is to identify the smallest information that permits good placement, protection, and diagnosis.
-Classic systems design advice still applies: state goals clearly, divide a hard problem into smaller ones,
-evolve incrementally, and settle for a good-enough mechanism when greater generality would make the system impossible to understand or operate.
+Co-design and stable interfaces introduce a tradeoff in how much information crosses a boundary.
+Hiding distinctions among accelerators and memories may hinder efficient placement.
+Exposing every device detail risks moving interface complexity upward.
+What is the smallest amount of information that supports good placement, protection, and diagnosis?
+Classic systems design advice offers useful starting points: clear goals, smaller subproblems, and incremental evolution.
+A good-enough mechanism may also be preferable when greater generality makes a system too difficult to understand or operate.
 
-\subsection{Systems Craft Must Become Transferable Knowledge}
+\subsection{From Systems Craft to Transferable Knowledge}
 
-Much of what makes a strong systems researcher effective is tacit:
-how to choose a boundary, interpret an anomalous measurement, simplify a design, debug across layers,
-or recognize that an optimization will fail in operation.
+Much of what makes a strong systems researcher effective is tacit knowledge.
+It includes choosing boundaries, interpreting anomalous measurements, simplifying designs, and debugging across layers.
+It also includes recognizing when an optimization is likely to fail in operation.
 This knowledge moves through apprenticeship and is repeatedly rediscovered in individual projects.
 Our field produces many systems, but it is less systematic about extracting the principles that survive them.
-The result is a growing related-work burden,
-fragile teaching material, and insights tied to products or hardware that may disappear before the next generation can use them.
+This makes it harder to organize related work and maintain useful teaching material.
+Insights may remain tied to products or hardware that disappear before the next generation can use them.
 
-We should make synthesis a first-class research contribution.
+Recognizing synthesis as a research contribution offers one way to make this knowledge more transferable.
 Surveys, reference models, shared artifacts, negative results,
 and abstractions validated across multiple systems can reveal where results agree and where design spaces remain unexplored.
 This is not an argument to stop building.
-Concrete systems are how we discover behavior and test ideas. The change is to treat the reusable knowledge extracted from them as an intended output rather than a by-product.
+Concrete systems are how we discover behavior and test ideas.
+The opportunity is to make the reusable knowledge extracted from them an explicit research output.
 
-AI makes this need more urgent.
-Code generation can increase productivity, but generated code does not teach a student why the boundary
-is correct or how to recognize a plausible failure.
-Education should use the tools while strengthening problem formulation, evaluation, and explanation.
-Until verification itself is dependable, the ability to inspect and challenge an automated result remains a core systems skill.
-A codified body of systems knowledge can also improve the tools:
-it supplies specifications, design alternatives, and failure patterns that are more durable than examples scraped from yesterday's code.
+AI adds an educational dimension to this discussion.
+Code generation offers productivity gains, but generated code alone does not explain why a boundary is appropriate or how to recognize a plausible failure.
+One educational approach is to pair these tools with practice in problem formulation, evaluation, and explanation.
+The limits of automated verification also make inspecting and challenging generated results a valuable systems skill.
+A codified body of systems knowledge could support the tools themselves.
+Specifications, design alternatives, and failure patterns may prove more durable than examples drawn from a particular codebase.
 
 \section{Community}
 
 Technical priorities alone do not determine the community's future.
-Who participates, what our venues reward, how we educate new researchers,
-and whether builders account for the consequences of their systems all shape which problems receive attention and which lessons survive.
+Participation and the incentives created by our venues influence which problems receive attention.
+Education shapes which lessons survive, while the consequences of deployed systems raise questions about responsibility.
 
-\textbf{Use conferences for interaction.}
+\textbf{Conferences as places for interaction.}
 Publication and community building are related but different functions.
-Review can evaluate a paper without reproducing the value of being together.
-Conferences should preserve time for practitioners, tutorials, focused discussions,
-early ideas, and exchange across seniority and research areas.
-Workshops and experimental tracks can test new formats, but their outcomes should be observed rather than defended as tradition. A larger publication pipeline is not, by itself, a stronger community.
+Paper review serves a different purpose from meeting in person.
+Time for practitioners, tutorials, focused discussions, and early ideas could enrich the conference experience.
+So could exchange across seniority and research areas.
+Workshops and experimental tracks offer settings to try new formats and assess their outcomes.
+A larger publication pipeline does not necessarily lead to a stronger community.
 
-\textbf{Match participation with representation.} The geographic center of systems research is broadening.
-Workshop data comparing 2016--2020 with 2021--2025 found that the average number of papers per conference from Asian institutions rose from about 6 to 15.2,
-while active faculty and contributing institutions also grew sharply.
+\textbf{Participation and representation.} The geographic center of systems research is broadening.
+Workshop data compared 2016--2020 with 2021--2025.
+The average number of papers per conference from Asian institutions rose from about 6 to 15.2.
+The numbers of active faculty and contributing institutions also grew sharply.
 Yet program committee representation remained about 11.3\%, below a publication share approaching 30\%.
-The precise measures deserve continued scrutiny, but the direction is clear:
-governance and service should broaden with research output.
+Although these measures deserve continued scrutiny, they raise a question about representation:
+how might governance and service better reflect the community's expanding research base?
 
-\textbf{Keep judgment and sustainability in the curriculum.} How can we teach students to use AI tools without surrendering responsibility for explaining and verifying their output?
-Education can emphasize problem statements, invariants, evaluation, and operational reasoning alongside implementation.
+\textbf{Judgment and sustainability in education.} How can we help students use AI tools while retaining responsibility for explaining and verifying the results?
+One approach is to give problem statements, invariants, evaluation, and operational reasoning attention alongside implementation.
 The fast replacement cycle of AI hardware creates another systems opportunity:
 aging accelerators may still serve other workloads, extending their useful life and reducing embodied-carbon cost.
-Resource efficiency should include the lifetime of the machine, not only the utilization of its newest device.
+This suggests a broader view of resource efficiency that considers a machine's lifetime alongside device utilization.
 
-\textbf{Accept responsibility for system effects.} Systems are not neutral plumbing.
-Their interfaces and defaults distribute power, determine what can be observed, and influence whether a harmful decision can be challenged.
-System builders should consider observability, provenance, explanation, access,
-redress, redundancy, and independent sources of truth as technical mechanisms.
-Safeguards should reflect both the likelihood and severity of harm, especially when recovery is impossible.
+\textbf{Responsibility for system effects.} System design has consequences beyond technical performance.
+System interfaces and defaults distribute power and determine what can be observed.
+They also influence whether a harmful decision can be challenged.
+Observability, provenance, explanation, access, redress, redundancy, and independent sources of truth offer possible technical safeguards.
+Their suitability depends on both the likelihood and severity of harm, especially when recovery is impossible.
 %Systems expertise can inform broader policy discussions by clarifying where risks arise and where technical controls can be applied.
 
 \section{Conclusion}
 
 Systems research is entering a period in which its workload, substrate, and design process are changing together.
 AI creates new infrastructure demands and new ways to explore designs.
-Specialization makes hardware software co-design necessary.
-Scale exposes failures that no component model captures.
-These forces reward work close to implementation, but they also increase the value of simple mechanisms, stable interfaces, and knowledge that survives a particular artifact.
+Specialization creates opportunities for hardware software co-design.
+Scale exposes failures that component-level models may miss.
+These changes give renewed relevance to work close to implementation.
+They also highlight the value of simple mechanisms, stable interfaces, and knowledge that survives a particular artifact.
 
-Our community already has the habits needed for this transition: expose a useful abstraction,
-characterize a tradeoff, build the mechanism, measure the whole system, and revise the design when reality disagrees.
+Our community brings a long tradition of developing abstractions, characterizing tradeoffs, and building mechanisms.
+Measuring whole systems and revising designs in light of experience are part of that tradition.
 Over the next five to ten years, we may see those habits increasingly applied across models, hardware, software, operations, and human institutions.
-As these habits spread, systems research may help make rapid technological change not only faster,
-but more understandable, dependable, and open to improvement.
+Applying these habits more broadly could help make changing technologies more understandable, dependable, and open to improvement.
 We thank the speakers, panelists, session chairs, organizers, and attendees of SSW '25 for the talks and discussions on which this report is based.
 The workshop program and recordings are available at \url{https://ipads.se.sjtu.edu.cn/sigops-strategic/}.
 
