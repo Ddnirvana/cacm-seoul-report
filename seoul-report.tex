@@ -221,13 +221,18 @@ A plausible but wrong diagnosis may prolong an outage.
 Alongside protocol refinement, deployment, observability, diagnosis, and repair offer research opportunities for improving availability.
 Models, experiments, and tools for these activities could help connect protocol guarantees to service behavior.
 
-\textbf{Failures created by composition.}
-Metastable failures show why component-wise reasoning is insufficient.
-A temporary trigger can push a service into a degraded state that persists after the trigger disappears.
-Retry amplification is one example.
-More generally, individually stable components may change one another's operating environments and become mutually destabilizing.
-Compositional models could help explain when local control loops preserve global stability.
-Related questions concern detecting entry into a metastable state and recovering without repeating the same feedback.
+\textbf{Failures created by composition.}  Metastable failures show
+why component-wise reasoning is insufficient.  A temporary trigger can
+push a service into a degraded state that persists after the trigger
+disappears.  Retry amplification is one example.  More generally,
+individually stable components may change one another's operating
+environments and enter a cycle of mutually destabilizing
+interactions. This cycle corresponds to a design fault, and it is
+often inevitable. Fualt-tolerance however is possible by augmenting
+the composition with a scheduler that prioritizes stabilizing
+interactions. Compositional models could help explain when local
+control loops preserve global stability.
+
 
 \textbf{Practical beachheads of correctness.}
 Whole-system verification remains difficult.
