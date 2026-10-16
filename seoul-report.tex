@@ -84,6 +84,10 @@ It does not survey the full breadth of systems research, nor does it claim that 
 Models and agents generate code, tune policies, and explore designs.
 The value of their output depends on how well specifications, evaluators, and verification capture the intended objective.
 
+\item \textbf{Learned components and agents call for new system tools.}
+Their behavior depends on data and model parameters as well as code.
+This creates opportunities for new tools spanning data preparation, training, testing, verification, runtime monitoring, etc.
+
 \item \textbf{Reliability is a property of the whole system.}
 Trustworthy components and reliable protocols do not automatically compose into an available service.
 This raises questions about deployment, performance, feedback loops, diagnosis, and persistent hardware faults.
@@ -164,8 +168,14 @@ An apparent improvement in the measured result also raises the question of wheth
 %such as dropping work.
 Possible approaches include diverse and held-out workloads, better simulators,
 and specifications that help explain why a proposed change works and where it fails.
-Traditional testing, monitoring, repair, and formal reasoning provide a starting point.
-How to adapt them to learned behavior and opaque model state remains an open question.
+
+\textbf{Tools for learned components and agents.}
+Learned components and agents introduce tooling challenges from data preparation and training through deployment and maintenance.
+Traditional tools offer a starting point, but learned behavior is encoded in model parameters as well as code.
+For example, high statement coverage in inference code says little about which learned behaviors a test has exercised.
+Research opportunities include testing with model-aware coverage metrics and verification methods suited to numerical computation.
+After deployment, monitors could detect shifts in input data or behavior, while repair tools could adapt models or remove harmful training-data influence.
+How these tools fit together across training, fine-tuning, and inference remains an open question.
 
 \textbf{Accuracy-aware infrastructure.} AI services introduce tradeoffs between system performance and output quality, beyond a binary notion of correctness.
 Quantization, caching, speculative execution, and continuous batching offer ways to improve efficiency.
@@ -210,6 +220,14 @@ An explicit trust model identifies which components a system assumes to be trust
 Risk analysis complements that model by examining the consequences of each trust assumption.
 How likely is the assumption to fail, and how much control would that failure grant?
 Least privilege, isolation, focused verification, diversity, and redundancy offer ways to limit control or avoid a single point of trust.
+
+\textbf{Adversarial threats to learned components and agents.}
+Trustworthiness also depends on resilience to deliberate manipulation.
+Attackers may poison training data, craft inputs that induce incorrect outputs, or use prompt injection and jailbreaks to redirect model behavior.
+For agents with access to tools and user privileges, such manipulation may affect actions as well as answers.
+The model supply chain adds another concern: unclear provenance complicates trust decisions, and a compromised model-loading process may execute malicious code.
+These threats raise questions about what an adversary controls, how attacks are detected, and how their effects are contained.
+Adversarial testing and runtime monitoring could complement isolation and constrained delegation in exploring these questions.
 
 \textbf{Availability beyond protocols.}
 Our field has reliable protocols, yet services built from them still fail.
