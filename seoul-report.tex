@@ -56,8 +56,8 @@ The influence also runs in the other direction:
 deployment experience has exposed new failure modes,
 forced abstractions to evolve, and supplied the problems that keep our field relevant.
 
-These achievements reflect the reach of systems research.
-Yet many of the assumptions behind them are shifting together.
+Isolation, predictable resource management, and reliable recovery remain difficult to achieve together in practical systems.
+These longstanding challenges are evolving alongside changes in the hardware and software landscape.
 General-purpose performance scaling has slowed.
 Domain-specific accelerators and new memory technologies are fragmenting the hardware substrate.
 AI is becoming both a major systems workload and a tool for producing systems.
@@ -80,6 +80,10 @@ It does not survey the full breadth of systems research, nor does it claim that 
 \section{Key Take-aways}
 
 \begin{itemize}
+\item \textbf{Building dependable operating systems remains an open challenge.}
+Microkernels and formal verification provide foundations for isolation and correctness.
+Building usable systems on these foundations raises open questions about service composition, resource management, and performance.
+
 \item \textbf{AI makes systems reasoning more important, not less.}
 Models and agents generate code, tune policies, and explore designs.
 The value of their output depends on how well specifications, evaluators, and verification capture the intended objective.
@@ -89,7 +93,8 @@ Their behavior depends on data and model parameters as well as code.
 This creates opportunities for new tools spanning data preparation, training, testing, verification, runtime monitoring, etc.
 
 \item \textbf{Reliability is a property of the whole system.}
-Trustworthy components and reliable protocols do not automatically compose into an available service.
+From device drivers and file systems to distributed services, reliability depends on how components interact and how failures are contained.
+Trustworthy components and reliable protocols do not automatically compose into a dependable system.
 This raises questions about deployment, performance, feedback loops, diagnosis, and persistent hardware faults.
 
 \item \textbf{Co-design and stable interfaces offer complementary benefits.}
@@ -221,6 +226,15 @@ Risk analysis complements that model by examining the consequences of each trust
 How likely is the assumption to fail, and how much control would that failure grant?
 Least privilege, isolation, focused verification, diversity, and redundancy offer ways to limit control or avoid a single point of trust.
 
+\textbf{Trustworthy OS foundations.}
+OS kernels remain central to open questions about security, fault containment, and resource management.
+Microkernel designs keep privileged mechanisms small and place services such as device drivers and file systems in separate user-level components.
+Formally verified microkernels such as seL4 show how rigorous proofs can establish kernel correctness and isolation under explicit assumptions.
+A possible continuing challenge is to carry these guarantees through the services and policies that make an operating system usable.
+%How can a driver failure be contained while shared resources remain available to other applications?
+How can independently developed services be composed so that their interactions preserve system-wide properties?
+These questions connect kernel architecture and formal reasoning to the construction of dependable embedded and general-purpose systems.
+
 \textbf{Adversarial threats to learned components and agents.}
 Trustworthiness also depends on resilience to deliberate manipulation.
 Attackers may poison training data, craft inputs that induce incorrect outputs, or use prompt injection and jailbreaks to redirect model behavior.
@@ -253,7 +267,8 @@ control loops preserve global stability.
 
 
 \textbf{Practical beachheads of correctness.}
-Whole-system verification remains difficult.
+Formal verification can establish that an implementation satisfies a precise specification under explicit assumptions.
+Extending these proofs to complete systems and maintaining them as code evolves remain difficult.
 Gradual verification offers a way to work with production code without first proving the entire system.
 It starts with the state, invariants, functions, and code paths that matter most,
 then finds a focused bug or proves a focused property.
@@ -291,9 +306,9 @@ This idea connects model-facing interfaces, cloud portability, configuration, an
 It also raises questions about verification and explanation.
 How precisely does the declaration describe the desired outcome, and what evidence explains how the system achieved it?
 
-\textbf{Revisiting OS design.} OS foundations still present open design questions.
-A small verified kernel may provide strong low-level guarantees while exposing interfaces too primitive for most system builders.
-How might a more usable structure be built above that base without recreating an unverifiable monolith?
+\textbf{Revisiting OS design.} OS design continues to face the challenge of combining strong isolation, efficient resource sharing, and usable abstractions.
+A small verified kernel offers strong low-level guarantees, while leaving system builders to construct services such as device drivers, file systems, and memory management above primitive interfaces.
+For embedded and general-purpose systems, how can these services be organized into a usable whole whose security and reliability can be understood and verified?
 Radical simplicity, fine-grained modules, and separation of concerns offer one direction.
 Sequential event-driven logic within modules and replaceable use-case-specific policies are related possibilities.
 The appeal is practical: mechanisms that are easier to understand, verify, maintain, and adapt while retaining performance.
