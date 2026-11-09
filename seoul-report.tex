@@ -84,9 +84,9 @@ It does not survey the full breadth of systems research, nor does it claim that 
 Microkernels and formal verification provide foundations for isolation and correctness.
 Building usable systems on these foundations raises open questions about service composition, resource management, and performance.
 
-\item \textbf{AI makes systems reasoning more important, not less.}
-Models and agents generate code, tune policies, and explore designs.
-The value of their output depends on how well specifications, evaluators, and verification capture the intended objective.
+\item \textbf{AI expands the scope of systems research.}
+Lower prototyping costs can make more ambitious systems feasible, while bringing problem formulation and evaluation into sharper focus.
+One option is to assess benchmarks, simulators, and specifications for AI-built systems as research contributions in their own right.
 
 \item \textbf{Learned components and agents call for new system tools.}
 Their behavior depends on data and model parameters as well as code.
@@ -104,6 +104,7 @@ Narrow and declarative interfaces support portability, evolution, and verificati
 
 \item \textbf{Our community's knowledge and practices are research infrastructure.}
 The discussions raised questions about preserving engineering judgment and turning tacit craft into transferable principles in an AI-assisted world.
+Venues could experiment with a synthesis track for surveys, reference models, negative results, and abstractions validated across systems.
 Participation, responsibility, and face-to-face exchange also emerged as themes in considering the field's progress.
 \end{itemize}
 
@@ -163,6 +164,12 @@ Its logic, however, is encoded in model state rather than source statements.
 For an agent that rewrites code, success depends on preserving the intended system behavior;
 a convenient benchmark may capture only part of that behavior.
 Conflating the roles risks building a fast tool that solves the wrong problem.
+
+\textbf{More ambitious systems prototypes.}
+AI-assisted development can substantially lower the cost of prototyping complete systems.
+This gives academic groups room to explore more ambitious designs, connect ideas across layers, and compare alternatives that previously required too much engineering effort.
+An OS idea, for example, may become easier to study together with the runtime and application that exercise it.
+As implementation becomes less costly, more of the research challenge lies in formulating a worthwhile problem, specifying the intended behavior, and designing an evaluation that exposes meaningful tradeoffs.
 
 \textbf{Evaluators as research artifacts.}
 As AI tools move from parameter tuning to white-box construction,
