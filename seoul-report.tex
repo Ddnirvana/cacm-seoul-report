@@ -65,7 +65,7 @@ Meanwhile, long software supply chains, wide cloud interfaces,
 and tightly coupled services make it harder to know what a system will do, why it failed, or whom to trust.
 
 In October 2025, the authors of this report met in Seoul, South Korea,
-for the first ACM SIGOPS Strategic Workshop, held with SOSP 2025.
+for the first ACM SIGOPS Strategic Workshop (SSW), held with SOSP 2025.
 The meeting brought together researchers and practitioners from operating systems,
 distributed systems, cloud infrastructure, architecture, reliability, and AI.
 It followed the spirit of the 2015 SOSP History Day and the database community's periodic research reports.
@@ -98,9 +98,9 @@ From device drivers and file systems to distributed services, reliability depend
 Trustworthy components and reliable protocols do not automatically compose into a dependable system.
 This raises questions about deployment, performance, feedback loops, diagnosis, and persistent hardware faults.
 
-\item \textbf{Co-design and stable interfaces offer complementary benefits.}
-Specialization creates opportunities for coordination across models, software, hardware, memory, and operations.
-Narrow and declarative interfaces support portability, evolution, and verification.
+\item \textbf{Co-design and stable interfaces pull in different directions.}
+Specialization creates opportunities for coordination across the stack, but vertical integration has also produced wide, provider-specific cloud interfaces that hinder portability, independent innovation, and verification.
+Narrow and declarative interfaces support portability, evolution, and verification, and can improve security by reducing the exposed attack surface.
 
 \item \textbf{Our community's knowledge and practices are research infrastructure.}
 The discussions raised questions about preserving engineering judgment and turning tacit craft into transferable principles in an AI-assisted world.
@@ -230,6 +230,7 @@ This hardware lottery may make alternatives appear impractical before their soft
 Intermediate representations, compilers, runtimes, and evaluation tools could help new hardware ideas run meaningful workloads without reproducing an entire ecosystem.
 
 \subsection{Reliability Across the Full System}
+\label{sec:reliability}
 
 Abstraction allows us to use a component without understanding its implementation,
 but not without depending on it.
@@ -298,7 +299,7 @@ Two questions follow: how much coverage is possible at acceptable overhead, and 
 
 Specialization often rewards vertical integration.
 Tuning an application, runtime, cloud service, and accelerator together offers immediate gains.
-Over time, however, tight coupling may obstruct portability, independent innovation, and verification.
+Over time, however, tight coupling may obstruct portability, independent innovation, security, and verification.
 Modern cloud platforms illustrate this tension.
 Instead of a narrow waist with many implementations below and applications above,
 they expose a wide and changing collection of provider-specific APIs.
@@ -306,11 +307,13 @@ AI-generated software adds another dimension to the problem.
 Each additional interface expands the behavior that the generator and evaluator have to account for.
 
 \textbf{Narrow waists through experience.} Earlier OS, network, and data management stacks illustrate the value of stable interfaces.
-By exposing a small common mechanism, these interfaces supported independent evolution.
+By exposing a small common mechanism, these interfaces supported independent evolution and helped limit the exposed attack surface.
+A narrow, well-understood boundary makes interactions between layers easier to reason about, complementing the least-privilege and isolation techniques discussed in Section~\ref{sec:reliability}.
 Similar waists are an appealing possibility for the cloud, although it may be difficult to define them before gaining experience with enough systems.
 Narrow waists often emerge after experimentation reveals what is truly common.
 Research could contribute by comparing real services and identifying repeated mechanisms.
 Candidate interfaces could then be tested for portability and their effects on important optimizations.
+Successful narrow waists have taken several forms: declarative languages (SQL, P4, ONNX), virtual machines and instruction sets (RISC-V, LLVM IR, eBPF), and APIs or protocols (POSIX, IP, HTTP).
 
 \textbf{Declarative interaction.}
 An imperative sequence forces the caller to coordinate intermediate state and often encodes accidental details of one implementation.
