@@ -118,6 +118,9 @@ AI has accelerated that movement, but arithmetic throughput alone gives an incom
 Memory bandwidth and capacity, data movement, energy, packaging,
 and the placement of data across heterogeneous memories increasingly determine performance and cost.
 For the OS and runtime, scheduling increasingly involves where computation and state reside, as well as when work runs.
+Provisioned power at the rack and facility level can also limit the capacity available to AI deployments.
+Within these limits, reducing energy per unit of useful work can increase sustainable throughput.
+CPUs, GPUs, NPUs, and memory technologies such as HBM, DRAM, and CXL-attached memory have different performance--power tradeoffs, making placement and scheduling part of power management.
 
 The second change is the dual role of AI.
 AI workloads bring probabilistic quality, enormous synchronous jobs, rapidly changing models,
@@ -214,6 +217,8 @@ Considering efficiency constraints early could help guide model and algorithm de
 System software connects new accelerators to applications, while automated exploration offers ways to compare designs across the stack.
 The relevant cost often extends beyond the GPU.
 CPU work, DRAM capacity, storage, data movement, and tools invoked by agents may dominate parts of a workflow.
+Power illustrates the need for coordination across these resources: a device-level optimization may shift consumption elsewhere or leave a shared power budget underused.
+OS and runtime mechanisms could coordinate fine-grained power controls and workload placement with rack- and facility-level limits, balancing energy efficiency with application performance.
 Research that reaches production quickly illustrates the opportunity for impact.
 It also highlights a risk: optimizing a single kernel may shift cost elsewhere in the workflow.
 
